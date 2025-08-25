@@ -1,0 +1,60 @@
+### Create a new message (Project B)
+# Note the required "send_msg:" prefix on the Idempotency-Key
+POST /api/messages/
+Host: 127.0.0.1:8080
+Content-Type: application/json
+Idempotency-Key: send_msg:client_message_id_123
+
+{
+    "sender_id": "MyCorp",
+    "recipient": "233241234567",
+    "text": "Hello, this is a test message."
+}
+
+
+### Create a new message (Invalid Sender ID)
+# This request should fail because "BadSender" is not in the whitelist.
+# It should return a 400 Bad Request.
+POST /api/messages/
+Host: 127.0.0.1:8080
+Content-Type: application/json
+Idempotency-Key: send_msg:client_message_id_456
+
+{
+    "sender_id": "BadSender",
+    "recipient": "233241234567",
+    "text": "This message should be rejected."
+}
+
+### Create a new message (Contains "STOP" Keyword)
+# This request should fail because the message text contains the "STOP" keyword.
+# It should return a 400 Bad Request.
+POST /api/messages/
+Host: 127.0.0.1:8080
+Content-Type: application/json
+Idempotency-Key: send_msg:client_message_id_789
+
+{
+    "sender_id": "MyCorp",
+    "recipient": "233241234567",
+    "text": "Please STOP sending me messages."
+}
+
+
+### Get a message by ID (Project B)
+# Replace <message_id> with a valid UUID
+GET /api/messages/fb0fd898-d03a-4d5e-8438-d5b353cd4b4e/
+Host: 127.0.0.1:8080
+Accept: application/json
+
+### Send a DLR webhook (Project B)
+# Replace provider_reference with a valid reference from a sent message
+POST /api/webhooks/dlr/
+Host: 127.0.0.1:8080
+Content-Type: application/json
+X-Provider-Signature: 4b940006a1aba18b30b97b65a4833f4a2f83b15c0dae9ee7875ff665e4eb14d8
+
+{
+    "provider_reference": "provider_ref_123",
+    "status": "DELIVERED"
+}
