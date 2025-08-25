@@ -130,7 +130,7 @@ def test_dlr_webhook_missing_signature(client, mocker):
     Unit test for the DLR webhook to ensure it rejects requests with
     a missing signature header.
     """
-    url = reverse('dlr_webhook')
+    url = reverse('dlr-webhook')
     
     # Mock the secret key
     mocker.patch('django.conf.settings.WEBHOOK_SECRET_KEY', 'my_secret_key')
